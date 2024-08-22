@@ -1,34 +1,47 @@
-# Stacks 2 Hands-On Lecture
+# RADseq data analysis with *Stacks* 2 hands-on lecture
 
-Documentation and examples for the RADseq analysis with *Stacks* 2 hands-on exercise at ConGen 2024, on Aug 27, 2024.
+Documentation and examples for the RADseq analysis with *Stacks* 2 hands-on 
+exercise at ConGen 2024, on Aug 27, 2024.
 
-(C) Angel G. Rivera-Colón <<ariverac@uoregon.edu>>
+(C) Angel G. Rivera-Colón (<ariverac@uoregon.edu>)
 
 ## Associated readings
 
 The RADseq data used for this exercise comes from the following publication:
 
-> Long, KM, Rivera-Colón, AG, Bennett, KFP, *et al*. (2024) **Ongoing introgression of a secondary sexual plumage trait in a stable avian hybrid zone**. *Evolution*, 2024;, qpae076, [DOI: 10.1093/evolut/qpae076](https://doi.org/10.1093/evolut/qpae076)
+> Long, KM, Rivera-Colón, AG, Bennett, KFP, *et al*. (2024) **Ongoing introgression 
+> of a secondary sexual plumage trait in a stable avian hybrid zone**. *Evolution*, 
+> 2024, qpae076, [DOI: 10.1093/evolut/qpae076](https://doi.org/10.1093/evolut/qpae076)
 
 The data is used here with the permission of the authors.
 
-The analysis described follow the general guidelines described in the *Stacks* 2 protocol manuscript:
+The analysis described follow the general guidelines described in the *Stacks* 2 
+protocol manuscript:
 
-> Rivera-Colón, AG, Catchen, JM (2022). **Population Genomics Analysis with RAD, Reprised: *Stacks* 2**. In: Verde, C., Giordano, D. (eds) *Marine Genomics. Methods in Molecular Biology*, vol 2498. Humana, New York, NY. [DOI: 10.1007/978-1-0716-2313-8_7](https://doi.org/10.1007/978-1-0716-2313-8_7)
+> Rivera-Colón, AG, Catchen, JM (2022). **Population Genomics Analysis with RAD, 
+> Reprised: *Stacks* 2**. In: Verde, C., Giordano, D. (eds) *Marine Genomics. 
+> Methods in Molecular Biology*, vol 2498. Humana, New York, NY. 
+> [DOI: 10.1007/978-1-0716-2313-8_7](https://doi.org/10.1007/978-1-0716-2313-8_7)
 
-For an algorithmic description of the *Stacks* 2 software, please check the 2019 *Mol Ecol* manuscript:
+For an algorithmic description of the *Stacks* 2 software, please check the 2019 
+*Mol Ecol* manuscript:
 
-> Rochette, NC, Rivera-Colón, AG, Catchen, JM. (2019) ***Stacks* 2: Analytical methods for paired-end sequencing improve RADseq-based population genomics**. *Molecular Ecology*, 28, 4737–4754. [DOI: 10.1111/mec.15253](https://doi.org/10.1111/mec.15253)
+> Rochette, NC, Rivera-Colón, AG, Catchen, JM. (2019) ***Stacks* 2: Analytical methods 
+> for paired-end sequencing improve RADseq-based population genomics**. *Molecular 
+> Ecology*, 28, 4737–4754. [DOI: 10.1111/mec.15253](https://doi.org/10.1111/mec.15253)
 
-For information on the download, installation, and documentation of the software, please visit the *Stacks* [website](https://catchenlab.life.illinois.edu/stacks/).
+For information on the download, installation, and documentation of the software, 
+please visit the *Stacks* [website](https://catchenlab.life.illinois.edu/stacks/).
 
 ## Repository for the exercise
 
-A copy of this document and the associated data can be found in [https://github.com/arcolon14/congen-23](https://github.com/arcolon14/arc-congen2024-radseq).
+A copy of this document and the associated data can be found in:
+[https://github.com/arcolon14/arc-congen2024-radseq](https://github.com/arcolon14/arc-congen2024-radseq).
 
 ## Preparing the environment
 
-**NOTE:** the directory hierarchy in the commands below referes to the ConGen2024 server.
+**NOTE:** the directory hierarchy in the commands below referes to the 
+ConGen2024 server.
 
 Make a directory for the Stacks assignment.
 
@@ -46,6 +59,7 @@ $ cp /data/instructor_materials/Angel_Rivera-Colon/2024/arc-radseq-data.congen24
 
 Uncompress this directory
 
+<!---Check this!--->
 ```sh
 $ tar xvf arc-radseq-data.congen24.tar.gz
 ```
@@ -113,18 +127,26 @@ $ ls *
 
 ## Breakdown of the available data
 
-This data directory contains several subdirectories describing this RADseq dataset at different stages of the analysis.
+This data directory contains several subdirectories describing this RADseq dataset at 
+different stages of the analysis.
 
 ### `raw-reads`
 
-The `raw-reads` directory contains the raw sequencing files (in `FASTQ` format) from this library. As described in [Long et al. 2024](https://doi.org/10.1093/evolut/qpae076), total of 130 *Manacus* samples were processed using a single-digest RADseq library ([Baird et al. 2008](https://doi.org/10.1371/journal.pone.0003376); [Etter et al. 2011](https://doi.org/10.1371/journal.pone.0018561)) using the *SbfI* restriction enzyme and paired-end sequenced on an Illumina NovaSeq6000, generating 2x150bp reads.
+The `raw-reads` directory contains the raw sequencing files (in `FASTQ` format) from 
+this library. As described in [Long et al. 2024](https://doi.org/10.1093/evolut/qpae076), 
+total of 130 *Manacus* samples were processed using a single-digest RADseq library 
+([Baird et al. 2008](https://doi.org/10.1371/journal.pone.0003376); 
+[Etter et al. 2011](https://doi.org/10.1371/journal.pone.0018561)) using the *SbfI* 
+restriction enzyme and paired-end sequenced on an Illumina NovaSeq6000, generating 
+2x150bp reads.
 
 ```sh
 $ ls raw-reads/
   MAVIRAD2_NoIndex_L002_R1_001.fastq.gz   MAVIRAD2_NoIndex_L002_R2_001.fastq.gz
 ```
 
-**Note:** For the sake of time, the files here only contain a fraction (~2 million reads) of the files in the real library.
+**Note:** For the sake of time, the files here only contain a fraction (~1 million 
+reads) of the files in the real library.
 
 ### `processed-samples`
 
@@ -142,11 +164,16 @@ $ ls processed-samples/
   SS_02_090.2.fq.gz
 ```
 
-The contents of the `processed-samples` directory represent the sequencing reads (in `FASTQ` format) for 40 *Manacus* individuals. They are the demultiplexed, cleaned reads generated by running `process_radtags` on the raw data. In the excersices below, we are just using 40 out of the total 130 samples. SSee `stacks-logs/process_radtags/process_radtags.MAVI2.log` for additional details about how these reads were processed.
+The contents of the `processed-samples` directory represent the sequencing reads 
+(in `FASTQ` format) for 40 *Manacus* individuals. They are the demultiplexed, cleaned 
+reads generated by running `process_radtags` on the raw data. In the excersices below, 
+we are just using 40 out of the total 130 samples.
 
-**Note:** For the sake of time, the files here only contain a subset of the total reads for each individual, those corresponding to a single chromosome-level scaffold.
+See `stacks-logs/process_radtags/process_radtags.MAVI2.log` for additional details 
+about how these reads were processed.
 
-### `processed-samples`
+**Note:** For the sake of time, the files here only contain a subset of the total 
+reads for each individual, those corresponding to a single chromosome-level scaffold.
 
 ### `alignments`
 
@@ -161,25 +188,35 @@ $ ls alignments/
   SS_02_090.bam
 ```
 
-The `alignments` directory contains the aligned reads (in `bam` format) from 40 *Manacus* individuals. The data for these 40 samples was run previously through `process_radtags` and aligned to the *Manacus vitellinus* RefSeq assembly (NCBI accession [GCF_001715985.3](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_001715985.3/)) using *BWA* `mem` ([Li 2013](https://doi.org/10.48550/arXiv.1303.3997)) and processed with the `view` and `sort` commands from *SAMtools* ([Li et al. 2009](https://doi.org/10.1093/bioinformatics/btp352)).
+The `alignments` directory contains the aligned reads (in `bam` format) from 40 *Manacus* 
+individuals. The data for these 40 samples was run previously through `process_radtags` 
+and aligned to the *Manacus vitellinus* RefSeq assembly (NCBI accession 
+[GCF_001715985.3](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_001715985.3/)) using 
+*BWA* `mem` ([Li 2013](https://doi.org/10.48550/arXiv.1303.3997)) and processed with the 
+`view` and `sort` commands from *SAMtools* 
+([Li et al. 2009](https://doi.org/10.1093/bioinformatics/btp352)).
 
 For example:
 
 ```sh
 $ bwa mem manVit.db PR_09_096.1.fq.gz PR_09_096.2.fq.gz | \
-    samtools view -b -h | \
-    samtools sort -o PR_09_096.bam
+      samtools view -b -h | \
+      samtools sort -o PR_09_096.bam
 ```
 
-Remember, `bam`s store the alignments in binary format (see `bam` [documentation](https://github.com/samtools/hts-specs/blob/master/SAMv1.pdf)). In order to view the alignments as text, we have to run the *SAMtools* `view` command:
+Remember, `bam`s store the alignments in binary format (see `bam` 
+[documentation](https://github.com/samtools/hts-specs/blob/master/SAMv1.pdf)). In order to 
+view the alignments as text, we have to run the *SAMtools* `view` command:
 
 ```sh
 $ samtools view PR_09_096.bam | less
 ```
 
-For more information on how to process and view alignments in the `bam` format, see the  *SAMtools* `view` [documentation](http://www.htslib.org/doc/samtools-view.html).
+For more information on how to process and view alignments in the `bam` format, see the 
+*SAMtools* `view` [documentation](http://www.htslib.org/doc/samtools-view.html).
 
-**NOTE:** For the sake of time, the `bam` files provided here have been filtered to include data from only one chromosome-level scaffold.
+**NOTE:** For the sake of time, the `bam` files provided here have been filtered to include 
+data from only one chromosome-level scaffold.
 
 ### `catalog`
 
@@ -190,11 +227,16 @@ $ ls catalog/
   catalog.fa.gz
 ```
 
-The files in the `catalog` directory describe a reference-based *Stacks* catalog. After aligning the reads to the *M. vitellinus* reference, the alignments were processed by the `gstacks` software to assemble RAD loci, genotype individuals, and remove PCR-duplicate reads.
+The files in the `catalog` directory describe a reference-based *Stacks* catalog. After 
+aligning the reads to the *M. vitellinus* reference, the alignments were processed by 
+the `gstacks` software to assemble RAD loci, genotype individuals, and remove 
+PCR-duplicate reads.
 
-See `stacks-logs/gstacks_ref/gstacks.log` for additional details regarding the generation of this catalog.
+See `stacks-logs/gstacks_ref/gstacks.log` for additional details regarding the 
+generation of this catalog.
 
-**NOTE:** For the sake of time, this catalog only contains a subset of the real data, representing the loci corresponding to a single chromosome-level scaffold (~5000 raw loci).
+**NOTE:** For the sake of time, this catalog only contains a subset of the real data, 
+representing the loci corresponding to a single chromosome-level scaffold (~5000 raw loci).
 
 ### `info`
 
@@ -209,25 +251,36 @@ The `info` directory contains several miscellaneous files used across the *Stack
 
 ```sh
 $ head info/barcodes.tsv
-ACTAGGA<tab>RU_080_003
-CAACGCA	    RU_080_005
-TCCGTTC	    RU_080_007
-GACGTGG	    RU_080_009
-AATTAAC     RU_080_010
-CACTCCA     RU_080_013
-TAATGCT     RU_080_021
-GCTAACG     RU_080_244
-ACACACG     RU_080_245
-CAGACTG     RU_080_246
+  ACTAGGA<tab>RU_080_003
+  CAACGCA     RU_080_005
+  TCCGTTC     RU_080_007
+  GACGTGG     RU_080_009
+  AATTAAC     RU_080_010
+  CACTCCA     RU_080_013
+  TAATGCT     RU_080_021
+  GCTAACG     RU_080_244
+  ACACACG     RU_080_245
+  CAGACTG     RU_080_246
 ```
 
-The file `barcodes.tsv` is a tab-delimted file containing the individual barcode sequences used to demultiplex each sample from the raw reads in `process_radtags`. Since this library was sequenced using the standard single-digest RADseq protocol ([Baird et al. 2008](https://doi.org/10.1371/journal.pone.0003376); [Etter et al. 2011](https://doi.org/10.1371/journal.pone.0018561)), it only uses a single 7-bp barcode per individual. See the *Stacks* [manual](https://catchenlab.life.illinois.edu/stacks/manual/#specbc) for additional information about the barcodes specification.
+The file `barcodes.tsv` is a tab-delimted file containing the individual barcode sequences 
+used to demultiplex each sample from the raw reads in `process_radtags`. Since this library 
+was sequenced using the standard single-digest RADseq protocol 
+([Baird et al. 2008](https://doi.org/10.1371/journal.pone.0003376); 
+[Etter et al. 2011](https://doi.org/10.1371/journal.pone.0018561)), it only uses a single 
+7-bp barcode per individual. See the *Stacks* 
+[manual](https://catchenlab.life.illinois.edu/stacks/manual/#specbc) for additional 
+information about the barcodes specification.
 
 #### The popmap files
 
-The `info` directory also contains two population map (i.e., "popmap") files. Each popmap is a tab-delimited file describing the group assignment of each sequenced individual.
+The `info` directory also contains two population map (i.e., "popmap") files. Each popmap is 
+a tab-delimited file describing the group assignment of each sequenced individual.
 
-The first popmap file (`popmap.tsv`), contains the information for 40 *Manacus* individuals. Each is assigned to a specific sampling site along a transect in Panama, as described by [Long et al. 2024](https://doi.org/10.1093/evolut/qpae076). In total, we have 40 samples across 8 total populations, each representing a different sampling site.
+The first popmap file (`popmap.tsv`), contains the information for 40 *Manacus* individuals. 
+Each is assigned to a specific sampling site along a transect in Panama, as described by 
+[Long et al. 2024](https://doi.org/10.1093/evolut/qpae076). In total, we have 40 samples 
+across 8 total populations, each representing a different sampling site.
 
 ```sh
 $ cat info/popmap.tsv
@@ -242,9 +295,15 @@ $ cat info/popmap.tsv
   ...
 ```
 
-As described in the *Stacks* [manual](https://catchenlab.life.illinois.edu/stacks/manual/#popmap), the first column contains the individual's ID, while the second column contains the ID of its respective group or population. In this example, individual `SS_02_081` is assigned to population `020SS` (shortened ID for transect site #2, San San Drury in [Long et al. 2024](https://doi.org/10.1093/evolut/qpae076)), while individual `PR_09_096` belongs to population `090PR` (site #9, Palma Real).
+As described in the *Stacks* [manual](https://catchenlab.life.illinois.edu/stacks/manual/#popmap), 
+the first column contains the individual's ID, while the second column contains the ID of 
+its respective group or population. In this example, individual `SS_02_081` is assigned to 
+population `020SS` (shortened ID for transect site #2, San San Drury in 
+[Long et al. 2024](https://doi.org/10.1093/evolut/qpae076)), while individual `PR_09_096` 
+belongs to population `090PR` (site #9, Palma Real).
 
-The second popmap, `popmap_catalog.tsv`, only contains a subset of 15 individuals, all assigned to the sample population (labelled `opt`).
+The second popmap, `popmap_catalog.tsv`, only contains a subset of 15 individuals, all 
+assigned to the sample population (labelled `opt`).
 
 ```sh
 $ cat info/popmap_catalog.tsv
@@ -257,11 +316,13 @@ $ cat info/popmap_catalog.tsv
   ...
 ```
 
-This smaller subset of the data will be used for some specific applications, e.g., the parameter optimization of the *de novo* assembly of loci.
+This smaller subset of the data will be used for some specific applications, e.g., the 
+parameter optimization of the *de novo* assembly of loci.
 
 ### `stacks-logs`
 
-The `stacks-logs` directory contains several subdirectories, each containing the log and distribution files for several , pre-run steps of the *Stacks* pipeline.
+The `stacks-logs` directory contains several subdirectories, each containing the log and 
+distribution files for several , pre-run steps of the *Stacks* pipeline.
 
 ```sh
 $ ls stacks-logs/*
@@ -281,13 +342,17 @@ $ ls stacks-logs/*
   process_radtags.MAVI2.log
 ```
 
-For the sake of time, in this exercise we are running the *Stacks* pipeline on reduced datasets. While fast, the logs from these reduced runs might not always be the most informative. Thus, this `stacks-logs` directory contains logs from the real, full dataset and will be used to explore the analysis in more detail. 
+For the sake of time, in this exercise we are running the *Stacks* pipeline on reduced 
+datasets. While fast, the logs from these reduced runs might not always be the most 
+informative. Thus, this `stacks-logs` directory contains logs from the real, full dataset 
+and will be used to explore the analysis in more detail. 
 
 <!---TODO: edit from here down--->
 
 ## Creating a catalog with `gstacks`
 
-In the main `stacks-radseq`, let's create a directory to store a new *Stacks* catalog. This will be the output directory for `gstacks`.
+In the main `stacks-radseq`, let's create a directory to store a new *Stacks* catalog. 
+This will be the output directory for `gstacks`.
 
 ```sh
 $ mkdir stacks-catalog
@@ -299,7 +364,13 @@ Let's then move into this directory
 $ cd stacks-catalog
 ```
 
-Once there, we want to run the *Stacks* `gstacks` program to create a new catalog of RADseq loci and variant sites generated from the aligned reads of our 60 *Manacus* samples, as specified with the popmap file. Since our data is aligned to a genome, we will be running the software in reference mode (by providing the path to the `bam` files). Since these samples were prepared in a single-digest RADseq library and sequenced used paired-end reads, we all able to also remove PCR duplicates when processing our new RAD loci.
+Once there, we want to run the *Stacks* `gstacks` program to create a new catalog of 
+RADseq loci and variant sites generated from the aligned reads of our 60 *Manacus* 
+samples, as specified with the popmap file. Since our data is aligned to a genome, we 
+will be running the software in reference mode (by providing the path to the `bam` 
+files). Since these samples were prepared in a single-digest RADseq library and 
+sequenced used paired-end reads, we all able to also remove PCR duplicates when 
+processing our new RAD loci.
 
 Here's an example of the `gstacks` command:
 
@@ -314,9 +385,13 @@ $ gstacks \
 
 ### Inspecting the catalog
 
-Once `gstacks` finishes running, we can inspect the coverage and PCR duplicate summary statistics from the `gstacks.log` file.
+Once `gstacks` finishes running, we can inspect the coverage and PCR duplicate summary 
+statistics from the `gstacks.log` file.
 
-**NOTE:** Due to limited time, we are running `gstacks` on a set of subsampled alignments. The examples below show results for a run containing data for the whole genome. A copy of this larger catalog can be found in `~/stacks-radseq/arc-radseq-data.congen23/stacks_data/gstacks`.
+**NOTE:** Due to limited time, we are running `gstacks` on a set of subsampled 
+alignments. The examples below show results for a run containing data for the whole 
+genome. A copy of this larger catalog can be found in 
+`~/stacks-radseq/arc-radseq-data.congen23/stacks_data/gstacks`.
 
 ```sh
 $ cat gstacks.log | grep -B 3 -A 5 '^Genotyped'
@@ -332,11 +407,15 @@ $ cat gstacks.log | grep -B 3 -A 5 '^Genotyped'
   gstacks is done.
 ```
 
-This catalog contains 130 thousand assembled loci (average length 656 bp). The average non-redundant coverage of 9x after removing 70% PCR duplicates. 97% of all loci were phased into haplotypes.
+This catalog contains 130 thousand assembled loci (average length 656 bp). The average 
+non-redundant coverage of 9x after removing 70% PCR duplicates. 97% of all loci were 
+phased into haplotypes.
 
 ### Per-individual catalog statistics
 
-The values above are a summary of the whole catalog. Looking at diagnostic distributions at an individual level might provide additional information regarding the properties of the catalog.
+The values above are a summary of the whole catalog. Looking at diagnostic distributions 
+at an individual level might provide additional information regarding the properties 
+of the catalog.
 
 #### Alignment statistics
 
@@ -442,9 +521,12 @@ $ cd ~/stacks-radseq/filter-catalog
 
 ### General `populations` run
 
-Get r80 loci present in the at least three of the six *Manacus* populations and observe alleles present at least three times (minimum count of 3, i.e., present in at least 2 samples). Run with the popmap containing all 60 samples.
+Get r80 loci present in the at least three of the six *Manacus* populations and 
+observe alleles present at least three times (minimum count of 3, i.e., present 
+in at least 2 samples). Run with the popmap containing all 60 samples.
 
-Create the directory of this run. The name of the directory (`populations.p3.r80.mac3`) describes the specific filters applied to the data.
+Create the directory of this run. The name of the directory 
+(`populations.p3.r80.mac3`) describes the specific filters applied to the data.
 
 ```sh
 $ mkdir populations.p3.r80.mac3
@@ -466,7 +548,10 @@ $ populations \
 
 ### Check the outputs of `populations`
 
-**Note:** for the sake of time, we ran `populations` on the reduced catalog we prepared earlier. We will use a larger run (available in `~/stacks-radseq/arc-radseq-data.congen23/stacks_data/populations/populations.p3.r80.mac3`) to explore the filtering of the catalog.
+**Note:** for the sake of time, we ran `populations` on the reduced catalog 
+we prepared earlier. We will use a larger run (available in 
+`~/stacks-radseq/arc-radseq-data.congen23/stacks_data/populations/populations.p3.r80.mac3`) 
+to explore the filtering of the catalog.
 
 Go to the large `populations` run:
 
@@ -484,18 +569,23 @@ $ ls populations/populations.p3.r80.mac3/
   populations.log             populations.sumstats_summary.tsv
 ```
 
-The `sumstats` and `hapstats` files contain the summary statistics assigned per-population for each SNPs and haplotype, respectively. The SNPs and haplotypes are also exported in VCF format.
+The `sumstats` and `hapstats` files contain the summary statistics assigned 
+per-population for each SNPs and haplotype, respectively. The SNPs and 
+haplotypes are also exported in VCF format.
 
-Inspect the `populations.log` file to obtain the number of loci and variant sites retained after filtering:
+Inspect the `populations.log` file to obtain the number of loci and variant 
+sites retained after filtering:
 
 ```sh
 $ cat populations.log | grep 'Kept'
   Kept 72066 loci, composed of 56612370 sites; 40540446 of those sites were filtered, 155674 variant sites remained.
 ```
 
-After applying filters, this run kept 72 thousand loci, containing 156 thousand variant sites.
+After applying filters, this run kept 72 thousand loci, containing 156 
+thousand variant sites.
 
-Inspect the `populations.log.distribs` to obtain additional diagnostic distributions and per-sample missing data statistics.
+Inspect the `populations.log.distribs` to obtain additional diagnostic 
+distributions and per-sample missing data statistics.
 
 #### Samples per-locus
 
@@ -581,5 +671,8 @@ Reformatted here for readability
 ## Authors
 
 **Angel G. Rivera-Colon**  
-Institute of Ecology and Evolution, University of Oregon, Eugene, OR, USA  
-<ariverac@uoregon.edu>
+Institute of Ecology and Evolution  
+University of Oregon  
+Eugene, OR, USA  
+<ariverac@uoregon.edu>  
+<https://github.com/arcolon14>
