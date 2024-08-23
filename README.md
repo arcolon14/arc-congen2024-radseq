@@ -251,16 +251,16 @@ The `info` directory contains several miscellaneous files used across the *Stack
 
 ```sh
 $ head info/barcodes.tsv
-  ACTAGGA<tab>RU_080_003
-  CAACGCA     RU_080_005
-  TCCGTTC     RU_080_007
-  GACGTGG     RU_080_009
-  AATTAAC     RU_080_010
-  CACTCCA     RU_080_013
-  TAATGCT     RU_080_021
-  GCTAACG     RU_080_244
-  ACACACG     RU_080_245
-  CAGACTG     RU_080_246
+  TCGCCAG<tab>SS_02_071
+  CGTGTGA     SS_02_081
+  TGTGCGG     SS_02_082
+  CGATACC     SS_02_085
+  ACATAGA     SS_02_090
+  TGACATG     SO_03_468
+  GAGTTGC     SO_03_469
+  CGTCCGC     SO_03_471
+  AGTGAAG     SO_03_477
+  GGCCTCG     SO_03_482
 ```
 
 The file `barcodes.tsv` is a tab-delimted file containing the individual barcode sequences 
@@ -271,6 +271,9 @@ was sequenced using the standard single-digest RADseq protocol
 7-bp barcode per individual. See the *Stacks* 
 [manual](https://catchenlab.life.illinois.edu/stacks/manual/#specbc) for additional 
 information about the barcodes specification.
+
+**NOTE:** For the sake of time, this file only contains barcodes for 40 out of the total 
+130 *Manacus* samples sequenced in the library.
 
 #### The popmap files
 
