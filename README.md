@@ -13,7 +13,7 @@ The RADseq data used for this exercise comes from the following publication:
 > of a secondary sexual plumage trait in a stable avian hybrid zone**. *Evolution*, 
 > 2024, qpae076, [DOI: 10.1093/evolut/qpae076](https://doi.org/10.1093/evolut/qpae076)
 
-The data is used here with the permission of the authors.
+The data is used here with the permission of the authors. Thanks to Kira M. Long!
 
 The analysis described follow the general guidelines described in the *Stacks* 2 
 protocol manuscript:
@@ -30,8 +30,16 @@ For an algorithmic description of the *Stacks* 2 software, please check the 2019
 > for paired-end sequencing improve RADseq-based population genomics**. *Molecular 
 > Ecology*, 28, 4737–4754. [DOI: 10.1111/mec.15253](https://doi.org/10.1111/mec.15253)
 
-For information on the download, installation, and documentation of the software, 
-please visit the *Stacks* [website](https://catchenlab.life.illinois.edu/stacks/).
+For more information regarding PCR duplicates, please check the 2023 *Mol Ecol Resour* 
+publication:
+
+> Rochette, NC, Rivera-Colón, AG, Walsh, J, *et al*. (2023) **On the causes, 
+> consequences, and avoidance of PCR duplicates: Towards a theory of library 
+> complexity.** *Molecular Ecology Resources*, 23, 1299–1318. 
+> [DOI: 10.1111/1755-0998.13800](https://doi.org/10.1111/1755-0998.13800)
+
+For information on the download, installation, and documentation of *Stacks*, 
+please visit the official [website](https://catchenlab.life.illinois.edu/stacks/).
 
 ## Repository for the exercise
 
