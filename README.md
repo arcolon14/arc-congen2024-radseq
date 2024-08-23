@@ -172,7 +172,7 @@ we are just using 40 out of the total 130 samples.
 See `stacks-logs/process_radtags/process_radtags.MAVI2.log` for additional details 
 about how these reads were processed.
 
-**Note:** For the sake of time, the files here only contain a subset of the total 
+**NOTE:** For the sake of time, the files here only contain a subset of the total 
 reads for each individual, those corresponding to a single chromosome-level scaffold.
 
 ### `alignments`
@@ -350,9 +350,101 @@ datasets. While fast, the logs from these reduced runs might not always be the m
 informative. Thus, this `stacks-logs` directory contains logs from the real, full dataset 
 and will be used to explore the analysis in more detail. 
 
-<!---TODO: edit from here down--->
+## Running the pipeline
 
-## Creating a catalog with `gstacks`
+### Processing raw data
+
+```sh
+$ mkdir processed-samples
+```
+
+Run `process_radtags`
+
+```sh
+$ process_radtags \
+      --in-path ./arc-radseq-data.congen24/raw-reads/ \
+      --paired \
+      --barcodes ./arc-radseq-data.congen24/info/barcodes.tsv \
+      --out-path ./processed-samples/ \
+      --clean \
+      --rescue \
+      --quality \
+      --renz-1 sbfI
+```
+
+### Create a *de novo* catalog
+
+```sh
+$ mkdir denovo_M4
+```
+
+```sh
+$ denovo_map.pl \
+      --samples ./arc-radseq-data.congen24/processed-samples/ \
+      --popmap ./arc-radseq-data.congen24/info/popmap.tsv \
+      --out-path denovo_M4/ \
+      -M 4 \
+      -n 4 \
+      --paired \
+      --rm-pcr-duplicates
+```
+
+### Create a reference-based catalog
+
+```sh
+$ mkdir ref_catalog
+```
+
+```sh
+$ gstacks \
+      -I ./arc-radseq-data.congen24/alignments/ \
+      -M ./arc-radseq-data.congen24/info/popmap.tsv \
+      -O ./ref_catalog/ \
+      --rm-pcr-duplicate
+```
+
+### Filter the catalog using `populations`
+
+#### General filters
+
+```sh
+$ $ mkdir populations_R50_p1_mac3
+```
+
+```sh
+$ populations \
+      --in-path ./ref_catalog/ \
+      --out-path ./populations_R50_p1_mac3/ \
+      --popmap ./arc-radseq-data.congen24/info/popmap.tsv \
+      --min-populations 1 \
+      --min-samples-overall 0.5 \
+      --min-mac 3
+```
+
+#### Strict filters
+
+```sh
+$ mkdir populations_r80_p8_maf05_dp5/
+```
+
+```sh
+$ populations \
+      --in-path ./ref_catalog/ \
+      --out-path ./populations_r80_p8_maf05_dp5/ \
+      --popmap ./arc-radseq-data.congen24/info/popmap.tsv \
+      --min-populations 8 \
+      --min-samples-per-pop 0.8 \
+      --min-maf 0.05 \
+      --min-gt-depth 5 \
+      --ordered-export \
+      --vcf
+```
+
+
+
+<!---Delete after this--->
+
+Creating a catalog with `gstacks`
 
 In the main `stacks-radseq`, let's create a directory to store a new *Stacks* catalog. 
 This will be the output directory for `gstacks`.
