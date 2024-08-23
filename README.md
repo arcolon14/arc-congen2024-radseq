@@ -69,60 +69,60 @@ Check the contents of the directory
 ```sh
 $ ls *
   alignments:
-  CG_10_067.bam  PR_09_096.bam  RO_05_206.bam  SO_03_468.bam
-  CG_10_069.bam  PR_09_102.bam  RO_05_221.bam  SO_03_469.bam
-  CG_10_070.bam  PR_09_111.bam  RO_05_222.bam  SO_03_471.bam
-  CG_10_093.bam  PR_09_112.bam  RO_05_223.bam  SO_03_477.bam
-  CG_10_094.bam  PR_09_115.bam  RO_05_254.bam  SO_03_482.bam
-  FC_04_510.bam  QP_06_190.bam  RU_08_203.bam  SS_02_071.bam
-  FC_04_511.bam  QP_06_191.bam  RU_08_204.bam  SS_02_081.bam
-  FC_04_514.bam  QP_06_195.bam  RU_08_205.bam  SS_02_082.bam
-  FC_04_550.bam  QP_06_226.bam  RU_08_245.bam  SS_02_085.bam
-  FC_04_553.bam  QP_06_228.bam  RU_08_249.bam  SS_02_090.bam
+  CG_10_067.bam   PR_09_096.bam   RO_05_206.bam   SO_03_468.bam
+  CG_10_069.bam   PR_09_102.bam   RO_05_221.bam   SO_03_469.bam
+  CG_10_070.bam   PR_09_111.bam   RO_05_222.bam   SO_03_471.bam
+  CG_10_093.bam   PR_09_112.bam   RO_05_223.bam   SO_03_477.bam
+  CG_10_094.bam   PR_09_115.bam   RO_05_254.bam   SO_03_482.bam
+  FC_04_510.bam   QP_06_190.bam   RU_08_203.bam   SS_02_071.bam
+  FC_04_511.bam   QP_06_191.bam   RU_08_204.bam   SS_02_081.bam
+  FC_04_514.bam   QP_06_195.bam   RU_08_205.bam   SS_02_082.bam
+  FC_04_550.bam   QP_06_226.bam   RU_08_245.bam   SS_02_085.bam
+  FC_04_553.bam   QP_06_228.bam   RU_08_249.bam   SS_02_090.bam
 
   catalog:
-  catalog.calls     catalog.fa.gz  gstacks.log.distribs
-  catalog.chrs.tsv  gstacks.log
+  catalog.calls      catalog.fa.gz   gstacks.log.distribs
+  catalog.chrs.tsv   gstacks.log
 
   info:
-  barcodes.tsv  popmap.tsv  popmap_catalog.tsv
+  barcodes.tsv   popmap.tsv   popmap_catalog.tsv
 
   processed-samples:
-  CG_10_067.1.fq.gz  PR_09_112.2.fq.gz  RU_08_205.1.fq.gz
-  CG_10_067.2.fq.gz  PR_09_115.1.fq.gz  RU_08_205.2.fq.gz
-  CG_10_069.1.fq.gz  PR_09_115.2.fq.gz  RU_08_245.1.fq.gz
-  CG_10_069.2.fq.gz  QP_06_190.1.fq.gz  RU_08_245.2.fq.gz
-  CG_10_070.1.fq.gz  QP_06_190.2.fq.gz  RU_08_249.1.fq.gz
-  CG_10_070.2.fq.gz  QP_06_191.1.fq.gz  RU_08_249.2.fq.gz
-  CG_10_093.1.fq.gz  QP_06_191.2.fq.gz  SO_03_468.1.fq.gz
-  CG_10_093.2.fq.gz  QP_06_195.1.fq.gz  SO_03_468.2.fq.gz
-  CG_10_094.1.fq.gz  QP_06_195.2.fq.gz  SO_03_469.1.fq.gz
-  CG_10_094.2.fq.gz  QP_06_226.1.fq.gz  SO_03_469.2.fq.gz
-  FC_04_510.1.fq.gz  QP_06_226.2.fq.gz  SO_03_471.1.fq.gz
-  FC_04_510.2.fq.gz  QP_06_228.1.fq.gz  SO_03_471.2.fq.gz
-  FC_04_511.1.fq.gz  QP_06_228.2.fq.gz  SO_03_477.1.fq.gz
-  FC_04_511.2.fq.gz  RO_05_206.1.fq.gz  SO_03_477.2.fq.gz
-  FC_04_514.1.fq.gz  RO_05_206.2.fq.gz  SO_03_482.1.fq.gz
-  FC_04_514.2.fq.gz  RO_05_221.1.fq.gz  SO_03_482.2.fq.gz
-  FC_04_550.1.fq.gz  RO_05_221.2.fq.gz  SS_02_071.1.fq.gz
-  FC_04_550.2.fq.gz  RO_05_222.1.fq.gz  SS_02_071.2.fq.gz
-  FC_04_553.1.fq.gz  RO_05_222.2.fq.gz  SS_02_081.1.fq.gz
-  FC_04_553.2.fq.gz  RO_05_223.1.fq.gz  SS_02_081.2.fq.gz
-  PR_09_096.1.fq.gz  RO_05_223.2.fq.gz  SS_02_082.1.fq.gz
-  PR_09_096.2.fq.gz  RO_05_254.1.fq.gz  SS_02_082.2.fq.gz
-  PR_09_102.1.fq.gz  RO_05_254.2.fq.gz  SS_02_085.1.fq.gz
-  PR_09_102.2.fq.gz  RU_08_203.1.fq.gz  SS_02_085.2.fq.gz
-  PR_09_111.1.fq.gz  RU_08_203.2.fq.gz  SS_02_090.1.fq.gz
-  PR_09_111.2.fq.gz  RU_08_204.1.fq.gz  SS_02_090.2.fq.gz
-  PR_09_112.1.fq.gz  RU_08_204.2.fq.gz
+  CG_10_067.1.fq.gz   PR_09_112.2.fq.gz   RU_08_205.1.fq.gz
+  CG_10_067.2.fq.gz   PR_09_115.1.fq.gz   RU_08_205.2.fq.gz
+  CG_10_069.1.fq.gz   PR_09_115.2.fq.gz   RU_08_245.1.fq.gz
+  CG_10_069.2.fq.gz   QP_06_190.1.fq.gz   RU_08_245.2.fq.gz
+  CG_10_070.1.fq.gz   QP_06_190.2.fq.gz   RU_08_249.1.fq.gz
+  CG_10_070.2.fq.gz   QP_06_191.1.fq.gz   RU_08_249.2.fq.gz
+  CG_10_093.1.fq.gz   QP_06_191.2.fq.gz   SO_03_468.1.fq.gz
+  CG_10_093.2.fq.gz   QP_06_195.1.fq.gz   SO_03_468.2.fq.gz
+  CG_10_094.1.fq.gz   QP_06_195.2.fq.gz   SO_03_469.1.fq.gz
+  CG_10_094.2.fq.gz   QP_06_226.1.fq.gz   SO_03_469.2.fq.gz
+  FC_04_510.1.fq.gz   QP_06_226.2.fq.gz   SO_03_471.1.fq.gz
+  FC_04_510.2.fq.gz   QP_06_228.1.fq.gz   SO_03_471.2.fq.gz
+  FC_04_511.1.fq.gz   QP_06_228.2.fq.gz   SO_03_477.1.fq.gz
+  FC_04_511.2.fq.gz   RO_05_206.1.fq.gz   SO_03_477.2.fq.gz
+  FC_04_514.1.fq.gz   RO_05_206.2.fq.gz   SO_03_482.1.fq.gz
+  FC_04_514.2.fq.gz   RO_05_221.1.fq.gz   SO_03_482.2.fq.gz
+  FC_04_550.1.fq.gz   RO_05_221.2.fq.gz   SS_02_071.1.fq.gz
+  FC_04_550.2.fq.gz   RO_05_222.1.fq.gz   SS_02_071.2.fq.gz
+  FC_04_553.1.fq.gz   RO_05_222.2.fq.gz   SS_02_081.1.fq.gz
+  FC_04_553.2.fq.gz   RO_05_223.1.fq.gz   SS_02_081.2.fq.gz
+  PR_09_096.1.fq.gz   RO_05_223.2.fq.gz   SS_02_082.1.fq.gz
+  PR_09_096.2.fq.gz   RO_05_254.1.fq.gz   SS_02_082.2.fq.gz
+  PR_09_102.1.fq.gz   RO_05_254.2.fq.gz   SS_02_085.1.fq.gz
+  PR_09_102.2.fq.gz   RU_08_203.1.fq.gz   SS_02_085.2.fq.gz
+  PR_09_111.1.fq.gz   RU_08_203.2.fq.gz   SS_02_090.1.fq.gz
+  PR_09_111.2.fq.gz   RU_08_204.1.fq.gz   SS_02_090.2.fq.gz
+  PR_09_112.1.fq.gz   RU_08_204.2.fq.gz
 
   raw-reads:
   MAVIRAD2_NoIndex_L002_R1_001.fastq.gz
   MAVIRAD2_NoIndex_L002_R2_001.fastq.gz
 
   stacks-logs:
-  denovo       populations_base    process_radtags
-  gstacks_ref  populations_strict
+  denovo        populations_base     process_radtags
+  gstacks_ref   populations_strict
 ```
 
 ## Breakdown of the available data
@@ -134,8 +134,8 @@ different stages of the analysis.
 
 The `raw-reads` directory contains the raw sequencing files (in `FASTQ` format) from 
 this library. As described in [Long et al. 2024](https://doi.org/10.1093/evolut/qpae076), 
-total of 130 *Manacus* samples were processed using a single-digest RADseq library 
-([Baird et al. 2008](https://doi.org/10.1371/journal.pone.0003376); 
+total of 130 manakins (genus *Manacus*) samples were processed using a single-digest 
+RADseq library ([Baird et al. 2008](https://doi.org/10.1371/journal.pone.0003376); 
 [Etter et al. 2011](https://doi.org/10.1371/journal.pone.0018561)) using the *SbfI* 
 restriction enzyme and paired-end sequenced on an Illumina NovaSeq6000, generating 
 2x150bp reads.
@@ -145,7 +145,7 @@ $ ls raw-reads/
   MAVIRAD2_NoIndex_L002_R1_001.fastq.gz   MAVIRAD2_NoIndex_L002_R2_001.fastq.gz
 ```
 
-**Note:** For the sake of time, the files here only contain a fraction (~1 million 
+**Note:** Due to limited time, the files here only contain a fraction (~1 million 
 reads) of the files in the real library.
 
 ### `processed-samples`
@@ -165,15 +165,15 @@ $ ls processed-samples/
 ```
 
 The contents of the `processed-samples` directory represent the sequencing reads 
-(in `FASTQ` format) for 40 *Manacus* individuals. They are the demultiplexed, cleaned 
+(in `FASTQ` format) for 40 manakin individuals. They are the demultiplexed, cleaned 
 reads generated by running `process_radtags` on the raw data. In the excersices below, 
 we are just using 40 out of the total 130 samples.
 
 See `stacks-logs/process_radtags/process_radtags.MAVI2.log` for additional details 
 about how these reads were processed.
 
-**NOTE:** For the sake of time, the files here only contain a subset of the total 
-reads for each individual, those corresponding to a single chromosome-level scaffold.
+**NOTE:** Due to limited time, the files here only contain a subset of the total reads 
+for each individual, those corresponding to a single chromosome-level scaffold.
 
 ### `alignments`
 
@@ -188,12 +188,12 @@ $ ls alignments/
   SS_02_090.bam
 ```
 
-The `alignments` directory contains the aligned reads (in `bam` format) from 40 *Manacus* 
+The `alignments` directory contains the aligned reads (in `bam` format) from 40 manakins
 individuals. The data for these 40 samples was run previously through `process_radtags` 
-and aligned to the *Manacus vitellinus* RefSeq assembly (NCBI accession 
-[GCF_001715985.3](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_001715985.3/)) using 
-*BWA* `mem` ([Li 2013](https://doi.org/10.48550/arXiv.1303.3997)) and processed with the 
-`view` and `sort` commands from *SAMtools* 
+and aligned to the golden-collared manakin (*Manacus vitellinus*) RefSeq assembly (NCBI 
+accession [GCF_001715985.3](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_001715985.3/)) 
+using *BWA* `mem` ([Li 2013](https://doi.org/10.48550/arXiv.1303.3997)) and processed 
+with the `view` and `sort` commands from *SAMtools* 
 ([Li et al. 2009](https://doi.org/10.1093/bioinformatics/btp352)).
 
 For example:
@@ -215,8 +215,8 @@ $ samtools view PR_09_096.bam | less
 For more information on how to process and view alignments in the `bam` format, see the 
 *SAMtools* `view` [documentation](http://www.htslib.org/doc/samtools-view.html).
 
-**NOTE:** For the sake of time, the `bam` files provided here have been filtered to include 
-data from only one chromosome-level scaffold.
+**NOTE:** Due to limited time, the `bam` files provided here have been filtered to 
+include data from only one chromosome-level scaffold.
 
 ### `catalog`
 
@@ -272,16 +272,16 @@ was sequenced using the standard single-digest RADseq protocol
 [manual](https://catchenlab.life.illinois.edu/stacks/manual/#specbc) for additional 
 information about the barcodes specification.
 
-**NOTE:** For the sake of time, this file only contains barcodes for 40 out of the total 
-130 *Manacus* samples sequenced in the library.
+**NOTE:** Due to limited time, this file only contains barcodes for 40 out of the total 
+130 manakin samples sequenced in the library.
 
 #### The popmap files
 
 The `info` directory also contains two population map (i.e., "popmap") files. Each popmap is 
 a tab-delimited file describing the group assignment of each sequenced individual.
 
-The first popmap file (`popmap.tsv`), contains the information for 40 *Manacus* individuals. 
-Each is assigned to a specific sampling site along a transect in Panama, as described by 
+The first popmap file (`popmap.tsv`), contains the information for 40 manakins. Each is 
+assigned to a specific sampling site along a transect in Panama, as described by 
 [Long et al. 2024](https://doi.org/10.1093/evolut/qpae076). In total, we have 40 samples 
 across 8 total populations, each representing a different sampling site.
 
@@ -330,16 +330,16 @@ distribution files for several , pre-run steps of the *Stacks* pipeline.
 ```sh
 $ ls stacks-logs/*
   stacks-logs/denovo:
-  cov_per_sample.tsv  denovo_map.log
+  cov_per_sample.tsv   denovo_map.log
 
   stacks-logs/gstacks_ref:
-  gstacks.log  gstacks.log.distribs
+  gstacks.log   gstacks.log.distribs
 
   stacks-logs/populations_base:
-  populations.log  populations.log.distribs
+  populations.log   populations.log.distribs
 
   stacks-logs/populations_strict:
-  populations.log  populations.log.distribs
+  populations.log   populations.log.distribs
 
   stacks-logs/process_radtags:
   process_radtags.MAVI2.log
