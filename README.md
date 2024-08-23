@@ -352,13 +352,98 @@ and will be used to explore the analysis in more detail.
 
 ## Running the pipeline
 
+### Inspect the raw data
+
+Before proceeding, it is always important to manually inspect the raw data. We have hundreds 
+of millions of reads, so it is impossible to *completely* check our files. However, it is 
+always good practice to check that it follows the the design of our RAD library.
+
+Here, we are looking at the first few lines of the forward reads.
+
+```sh
+$ zcat arc-radseq-data.congen24/raw-reads/MAVIRAD2_NoIndex_L002_R1_001.fastq.gz | head -n 12
+  @A00419:507:HM23CDRXY:2:2101:1108:1000 1:N:0:1
+  TCATGAGTGCAGGACTGACACATTTTCCAGGGCAGTGTCCACAGAACATCATCATGCCAGGGCT...
+  +
+  FFFFFFFFFF:FFFFFFFFFFFFFFFFFFFFFFFF:FFFFFFFFFFFFFFFFFFF:FFFFFFFF...
+  @A00419:507:HM23CDRXY:2:2101:1090:1000 1:N:0:1
+  CTCGAAGTGCAGGAAAACCAGCCCCTGCCACGCTCANCAGGCACGCCTGGCATCTCATTTTCCT...
+  +
+  :FFFFFFF,F:FFFFF:FFF:FFFFFFFFFFFFFFF:FFFFFFFFFFFFFFFFFFFFFFFFFFF...
+  @A00419:507:HM23CDRXY:2:2101:1597:1000 1:N:0:1
+  GTAGCTTTGCAGGAAGCCGAGGCAATGTGCCCATGTCACCAAGGCTGGGGATGAGGGTCCGCAT...
+  +
+  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF,FFFFFFFFFF...
+```
+
+The raw reads in `FASTQ` format ([Cock et al. 2009](https://doi.org/10.1093/nar/gkp1137)). 
+The records on a `FASTQ` file are broken down in four lines (or fields):
+
+1. The sequence ID line, starting with an `@`. This can contain information about 
+   index barcodes.
+2. The sequence line, containing the nucleotide sequence.
+3. The third field starts with a `+`. It is often empty, but it can also repeat the 
+   information in the header line.
+4. The quality (or `PHRED`) scores.
+
+This library was constructed using a single-digest RADseq protocol 
+([Baird et al. 2008](https://doi.org/10.1371/journal.pone.0003376); 
+[Etter et al. 2011](https://doi.org/10.1371/journal.pone.0018561)),
+so we expect the first 7 bases to be the in-line barcode. This means our first
+record corresponds to barcode `TCATGAG`, the second record to barcode `CTCGAAG`,
+the third to barcode `GTAGCTT`, etc.
+
+After the barcode, we expect to see the cutsite. This library was constructed 
+with the *SbfI* restriction enzyme, so we expect to see the corresponding 
+overhang (`TGCAGG`).
+
+Let's now look at the paired reads.
+
+```sh
+$ zcat arc-radseq-data.congen24/raw-reads/MAVIRAD2_NoIndex_L002_R2_001.fastq.gz | head -n 12
+  @A00419:507:HM23CDRXY:2:2101:1108:1000 2:N:0:1
+  AGTGACAATAGCTGTAATAGCCTGGTTCTTGGTCAGTGGTGACCTGCTAAGACAGGGATTGAAT...
+  +
+  F:FFFFF:,:F,FFFFFFFFFFFFFFF,F:FFF:FFFFFF,,FFF::FFFF,FFFFFFFFF:FF...
+  @A00419:507:HM23CDRXY:2:2101:1090:1000 2:N:0:1
+  CAGGAAGGCAATGGGCTCTCCAAGGGTGCTCCAAAGGGCTTTCAACCTCCATAATGTCTCATTT...
+  +
+  :FF:FF:F,FFFFFFFFFF:FFF,FF:FFFFFFFF,F,FF,FF:F::,FF:FFFF,:F:FF,FF...
+  @A00419:507:HM23CDRXY:2:2101:1597:1000 2:N:0:1
+  AGAGCCGGTGGGAAAGTCTGTGGCTGTTGCTATTTTCTATCTGTTATCAAGGCCTCTTATCACT...
+  +
+  FFFFFFFFFFFFFF:FFFFFFFFFFFFFFFFFF,FFFFFF:FFFFFFFFFFFF:F:FF:FFFF:...
+```
+
+Following the library configuration, we do not expect to see a barcode nor 
+a restriction enzyme cutsite.
+
 ### Processing raw data
+
+After inspecting the raw data, we can start processing it using the *Stacks*
+`process_radtags` program. We can demultiplex the combined reads into the 
+data for the individual samples, and we can filter the reads to remove 
+those of low quality.
+
+First, we will create a new directory to store the data for the processed 
+samples.
 
 ```sh
 $ mkdir processed-samples
 ```
 
-Run `process_radtags`
+The raw paired-end reads are located in the `arc-radseq-data.congen24/raw-reads/` 
+directory. The barcodes describing the individual assignment of each sample are 
+in `arc-radseq-data.congen24/info/barcodes.tsv`. We want to remove any reads 
+with uncalled bases (`N`s), we want to rescue barcodes and cutsites, and remove 
+reads with low quality. Also, we want to specify that this library was generated 
+using a single restriction enzyme, *SbfI*. Other paramters can be left default, 
+for example the library uses `inline-null` barcodes.
+
+For more information on the program, please see the `process_radtags` 
+[documentation](https://catchenlab.life.illinois.edu/stacks/comp/process_radtags.php).
+
+Here is an example of our `process_radtags` command.
 
 ```sh
 $ process_radtags \
@@ -370,6 +455,61 @@ $ process_radtags \
       --rescue \
       --quality \
       --renz-1 sbfI
+```
+
+Upon completion, `process_radtags` will report statistics about the filtered reads. 
+Remember, we are running a subset of the original reads, so the results might not be 
+the most representative. We can look at the results from a full run in the log files 
+located in `arc-radseq-data.congen24/stacks-logs/process_radtags/`.
+
+We can inspect the logs from `process_radtags` using the *Stacks* 
+`stacks-dist-extract` program.
+
+```sh
+$ stacks-dist-extract process_radtags.MAVI2.log total_raw_read_counts
+  Total Sequences        822561114
+  Barcode Not Found      37391352   4.5%
+  Low Quality            866995     0.1%
+  Poly-G Runs            2982449    0.4%
+  RAD Cutsite Not Found  4241295    0.5%
+  Retained Reads         777079023  94.5%
+  Properly Paired        384920302  93.6%
+```
+
+From this, we can observe that 94.5% of reads in this library were retained, 93.6% 
+of which were properly paired (i.e., both forward and paired reads were kept). Most 
+of the reads were due to not having a proper barcode sequence (4.5%); however, 
+losses due to low quality and missing cutsites were minimal (0.1% and 0.5%, 
+respectively).
+
+We can also look at a per-sample breakdown of the reads. Once again, we can acess this 
+information using the `stacks-dist-extract` command.
+
+```sh
+$ stacks-dist-extract process_radtags.MAVI2.log per_barcode_raw_read_counts | \
+cut -f2,3,7,8,9,10 
+  Filename     Total      Pct Retained   Pct Properly Paired   Pct Total Reads
+  RU_080_003   2718084    98.9%          97.9%                 0.3%
+  RU_080_005   5905912    98.8%          97.6%                 0.7%
+  RU_080_007   5016924    99.1%          98.2%                 0.6%
+  RU_080_009   6368388    98.7%          97.6%                 0.8%
+  RU_080_010   5832120    98.9%          97.9%                 0.7%
+  RU_080_013   5640074    98.9%          97.9%                 0.7%
+  RU_080_021   4250646    97.9%          95.9%                 0.5%
+  RU_080_244   14129520   99.2%          98.5%                 1.7%
+  RU_080_245   7057982    99.1%          98.4%                 0.9%
+  ...
+```
+
+For simplicty, we are just looking at some of the columns here (selected with the 
+`cut` command). For each sample, we can observe the proportion of reads retained, 
+and properly paired, as well as the total proportion of reads of that sample in 
+the total library. Moreover, the output of `stacks-dist-extract` is by default 
+tab-delimited, so it can be redirected to a file. This new file can be loaded into 
+a R/Excel/Google Sheets/etc. for additional visualization and analysis.
+
+```sh
+$ stacks-dist-extract process_radtags.MAVI2.log per_barcode_raw_read_counts > per_barcode_raw_read_counts.tsv
 ```
 
 ### Create a *de novo* catalog
@@ -444,7 +584,7 @@ $ populations \
 
 ## Authors
 
-**Angel G. Rivera-Colon**  
+**Angel G. Rivera-Colón**  
 Institute of Ecology and Evolution  
 University of Oregon  
 Eugene, OR, USA  
