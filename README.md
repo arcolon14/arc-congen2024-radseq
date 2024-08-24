@@ -60,9 +60,8 @@ $ cd stacks-radseq/
 
 Copy the raw data from the instructors directory
 
-<!---Check this!--->
 ```sh
-$ cp /data/instructor_materials/Angel_Rivera-Colon/2024/arc-radseq-data.congen24.tar.gz .
+$ cp ../instructor_materials/Angel_Rivera-Colon/2024/arc-radseq-data.congen24.tar.gz .
 ```
 
 Uncompress this directory
@@ -437,7 +436,7 @@ First, we will create a new directory to store the data for the processed
 samples.
 
 ```sh
-$ mkdir processed-samples
+$ mkdir processed_samples
 ```
 
 The raw paired-end reads are located in the `arc-radseq-data.congen24/raw-reads/` 
@@ -458,7 +457,7 @@ $ process_radtags \
       --in-path ./arc-radseq-data.congen24/raw-reads/ \
       --paired \
       --barcodes ./arc-radseq-data.congen24/info/barcodes.tsv \
-      --out-path ./processed-samples/ \
+      --out-path ./processed_samples/ \
       --clean \
       --rescue \
       --quality \
@@ -522,9 +521,88 @@ $ stacks-dist-extract process_radtags.MAVI2.log per_barcode_raw_read_counts > pe
 
 ### Create a *de novo* catalog
 
+Next, we will see how to assemble a *Stacks* catalog *de novo*--assembling loci 
+and genotyping individuals without the need of a reference genome. The *de novo* 
+pipeline in *Stacks* consists of several programs used to 1. cluster reads into 
+loci in each individual (`ustacks`), 2. combine the loci of several individuals 
+into a catalog of loci of the metapopulation (`cstacks`), and 3. match the loci 
+of all sequenced individuals to this catalog (`sstacks`). Loci are then further 
+further processed and genotyped in `gstacks`. Since this involves running multiple 
+programs in *Stacks*, some of them several times across all the individuals, it 
+is common to run the *de novo* pipeline using one of the wrapper scripts, in this 
+case `denovo_map.pl`, which automates this process.
+
+#### Optimizing a *de novo* catalog generation
+
+Before generating a *de novo* catalog on the whole data, a common question is 
+which parameter should be use to generate this catalog. These parameters define 
+the thresholds used to cluster alleles into loci in a single individual, and then 
+the threshold to match loci across individuals. Improper selection of these 
+thresholds means that, e.g., different alleles can be erroneously processed as 
+separate loci, or non-homologuos loci can be combined as a single locus across 
+sequenced individuals.
+
+Within *Stacks*, there are to main options that control these two threshols 
+during *de novo* catalog generation:
+
+1. `M`: used in `ustacks` to define the number of mismatches allowed between 
+   the stacks (in this case alleles) within an individual.
+2. `n`: used in `cstacks` to define the number of mismatches allowed between 
+   the statcks (in this case loci) between individuals.
+
+There are several methods used for optimize these two parameters in *Stacks*, the 
+most common one being the "r80" method, described by 
+[Paris et al. 2017](https://doi.org/10.1111/2041-210X.12775) and further detailed 
+in [Rochette & Catchen 2017](https://doi.org/10.1038/nprot.2017.123). This method 
+sets the values of `M` by maximizing the number of loci that are recovered in 80% 
+of individuals in the analysis (defined by the `r` parameter in `populations`). 
+The value of `n` is set by default equal to that of `M`, with the assumption that 
+the genetic distance within and between individuals is roughly the same. The 
+general idea is to chose the paramter that lead to the highest number of usable 
+loci and the least proportion of missing data.
+
+**NOTE:** The r80 method just provides general guideliness and is just one of 
+many valid alternatives. Some dataset might "respond" differently to contransting 
+optimization approaches, and specific experimental designs might seek to maximize 
+these parameters differently. For example, when working in phylogenetics, it might 
+be more important to fine tune the number of mistmatches between individuals (`n`) 
+of different species. Other datasets might have several "optimal" valies of `M`. 
+There is no "one size fits all" when discussing parameter optimization.
+
+To run the r80 method on our dataset, we will run the `denovo_map.pl` wrapper 
+several times, changing the value of `M` within a range of values. Here, we will 
+do four simple runs, ranging from `M=3` to `M=6`. On real dataset, testing over 
+a larger range of values is recommended (e.g., 1 to 12).
+
+Additionally, will generate a catalog using only a subset of samples, with the 
+assumption that these samples are representative of the whole dataset. This is 
+often recommended to provide a general speedup of the process. For this purpose, we 
+have provided a secondary popmap (`info/popmap_catalog.tsv`) just containing 15 
+manakin samples, all assigned to a single group labelled `opt`.
+
+We will also generate an output directory to store the outputs of this run. We 
+will name this directory according to the value of `M`, 3 in this example.
+
+```sh
+$ mkdir param_opt_M3
+```
+
+We then want to run `denovo_map.pl`, specfying the value of `M`, the smaller 
+popmap, and our new output directory. As our input data, we will specify the 
+processed the FASTQ files in `arc-radseq-data.congen24/processed-samples/`. These 
+
+
+$ denovo_map.pl       --samples ./arc-radseq-data.congen24/processed-samples/       --popmap ./arc-radseq-data.congen24/info/popmap_catalog.tsv       --out-path ./param_opt_M4/      -M 4       -n 4       --paired       --rm-pcr-duplicates -r 0.8
+
+$ cat param_opt_M4/populations.log | grep '^Kept'Kept 2668 loci, composed of 1715600 sites; 460105 of those sites were filtered, 17014 variant sites remained.
+
+####
+
 ```sh
 $ mkdir denovo_M4
 ```
+
+Remember, we are not using the raw data generated in the previous step.
 
 ```sh
 $ denovo_map.pl \
@@ -556,7 +634,7 @@ $ gstacks \
 #### General filters
 
 ```sh
-$ $ mkdir populations_R50_p1_mac3
+$ mkdir populations_R50_p1_mac3
 ```
 
 ```sh
@@ -572,7 +650,7 @@ $ populations \
 #### Strict filters
 
 ```sh
-$ mkdir populations_r80_p8_maf05_dp5/
+$ mkdir populations_r80_p8_maf05_dp5
 ```
 
 ```sh
