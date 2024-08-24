@@ -571,7 +571,7 @@ There is no "one size fits all" when discussing parameter optimization.
 
 To run the r80 method on our dataset, we will run the `denovo_map.pl` wrapper 
 several times, changing the value of `M` within a range of values. Here, we will 
-do four simple runs, ranging from `M=3` to `M=6`. On real dataset, testing over 
+do five simple runs over a smaller range of values (5 to 9). On real dataset, testing over 
 a larger range of values is recommended (e.g., 1 to 12).
 
 Additionally, will generate a catalog using only a subset of samples, with the 
@@ -581,39 +581,308 @@ have provided a secondary popmap (`info/popmap_catalog.tsv`) just containing 15
 manakin samples, all assigned to a single group labelled `opt`.
 
 We will also generate an output directory to store the outputs of this run. We 
-will name this directory according to the value of `M`, 3 in this example.
+will name this directory according to the value of `M`, 5 in this example.
 
 ```sh
-$ mkdir param_opt_M3
+$ mkdir param_opt_M5
 ```
 
 We then want to run `denovo_map.pl`, specfying the value of `M`, the smaller 
-popmap, and our new output directory. As our input data, we will specify the 
-processed the FASTQ files in `arc-radseq-data.congen24/processed-samples/`. These 
+popmap, and our new output directory. Also, we want to specify that our input 
+data contains paired reads, that we want to remove PCR duplicate reads, and that 
+we only want to keep loci/SNPs present in 80% of samples per-population.
 
+As our input data, we will specify the processed the FASTQ files in 
+`arc-radseq-data.congen24/processed-samples/`. Note that these are the processed 
+samples provided in the shared data, not the ones we just generated using 
+`processed_radtags`. 
 
-$ denovo_map.pl       --samples ./arc-radseq-data.congen24/processed-samples/       --popmap ./arc-radseq-data.congen24/info/popmap_catalog.tsv       --out-path ./param_opt_M4/      -M 4       -n 4       --paired       --rm-pcr-duplicates -r 0.8
-
-$ cat param_opt_M4/populations.log | grep '^Kept'Kept 2668 loci, composed of 1715600 sites; 460105 of those sites were filtered, 17014 variant sites remained.
-
-####
+Here is an example command:
 
 ```sh
-$ mkdir denovo_M4
+$ denovo_map.pl \
+  --samples ./arc-radseq-data.congen24/processed-samples/ \
+  --popmap ./arc-radseq-data.congen24/info/popmap_catalog.tsv \
+  --out-path ./param_opt_M5/ \
+  -M 5 \
+  -n 5 \
+  --paired \
+  --rm-pcr-duplicates -r 0.8
 ```
 
-Remember, we are not using the raw data generated in the previous step.
+After `denovo_map.pl` completes, we can check the number of retained loci by 
+checking at the log from `populations`. We can easily find this number on the 
+command line by searching for a line starting with "Kept" using the `grep` 
+program. This will give us information by the total number of loci and variant 
+sites retained after applying the 80% missing data filter.
+
+```sh
+$ cat param_opt_M5/populations.log | grep '^Kept'
+  Kept 2681 loci, composed of 1724932 sites; 
+    461635 of those sites were filtered, 
+    17346 variant sites remained.
+```
+
+Additionally, we can look at the data in the SUMSTATS table `
+(`populations.sumstats.tsv`), which will provide us information of the number 
+of total remained loci that polymorphic (i.e., that contain variant sites). 
+We can contain this by counting the number of loci seen on the first column 
+of the SUMSTATS.
+
+```sh
+$ cat param_opt_M5/populations.sumstats.tsv | \
+    grep -v '^#' | cut -f 1 | sort -n -u | wc -l
+  2599
+```
+
+After running this for the full range of `M`, we obtain the following results:
+
+
+| `M` | `n` | Kept Loci | Polymorphic Loci | % Polymorphic | Variant Sites | Change in Loci |
+| --- | --- | --------- | ---------------- | ------------- | ------------- | -------------- |
+| 1   | 1   | 2,325     | 2,204            | 94.80%        | 10,818        | --             |
+| 2   | 2   | 2,534     | 2,439            | 96.25%        | 14,226        | 235            |
+| 3   | 3   | 2,641     | 2,551            | 96.59%        | 16,124        | 112            |
+| 4   | 4   | 2,668     | 2,583            | 96.81%        | 17,014        | 32             |
+| 5   | 5   | 2,681     | 2,599            | 96.94%        | 17,346        | 16             |
+| 6   | 6   | 2,690     | 2,606            | 96.88%        | 17,488        | 7              |
+| 7   | 7   | 2,689     | 2,605            | 96.88%        | 17,591        | -1             |
+| 8   | 8   | 2,692     | 2,609            | 96.92%        | 17,668        | 4              |
+| 9   | 9   | 2,693     | 2,609            | 96.88%        | 17,650        | 0              |
+| 10  | 10  | 2,691     | 2,609            | 96.95%        | 17,655        | 0              |
+| 11  | 11  | 2,689     | 2,606            | 96.91%        | 17,664        | -3             |
+| 12  | 12  | 2,686     | 2,603            | 96.91%        | 17,628        | -3             |
+
+Following the guidelines from the r80 method, we see that the increase of new loci 
+plateaus at `M=n=6`. After that, there is a minimal change in the number of loci that 
+are gained or lossed after increasing the `M=n` threshold. An `M` of 6 is likely the
+optimal value for this parameter under these *specific* conditions.
+
+##### Optional: Optimizing `n`
+
+This optimization is likely sufficient. However, if we wanted to optimize this 
+dataset further, we could separately optimize `n` indepdendent of `M`. Depending 
+on the genetic distance between the individuals, it might be reasonable to expect 
+`n` (the mistmatches *between* individuals) to be larger than `M` (the mismatches 
+*within* individuals).
+
+To do this, we can test of a range of `n` values against a fixed value of `M` (6 in 
+this example). We could start at `n` equal to `M-1` (an unlikely value, but we can 
+use it to "anchor" our results) and end, for example, at `n` equals two times `M` 
+(again, an unlikely value, but provides a good comparison).
+
+Like before, we will make a new output directory and run `denovo_map.pl` with the 
+corresponding `M` and `n` values.
+
+```sh
+$ mkdir ./param_opt_M6n8/
+
+$ denovo_map.pl \
+  --samples ./arc-radseq-data.congen24/processed-samples/ \
+  --popmap ./arc-radseq-data.congen24/info/popmap_catalog.tsv \
+  --out-path ./param_opt_M6n8/ \
+  -M 6 \
+  -n 8 \
+  --paired \
+  --rm-pcr-duplicates -r 0.8
+```
+
+Once each runs complete, we can extract the values of kept loci and variant 
+sites from the `populations.log` and `populations.sumstats.tsv` files, 
+as shown previously.
+
+| `M` | `n` | Kept Loci | Polymorphic Loci | % Polymorphic | Variant Sites | Change in Loci |
+| --- | --- | --------- | ---------------- | ------------- | ------------- | -------------- |
+| 6   | 5   | 2,686     | 2,602            | 96.87%        | 17,424        | --             |
+| 6   | 6   | 2,690     | 2,606            | 96.88%        | 17,488        | 4              |
+| 6   | 7   | 2,692     | 2,608            | 96.88%        | 17,578        | 2              |
+| 6   | 8   | 2,694     | 2,610            | 96.88%        | 17,640        | 2              |
+| 6   | 9   | 2,692     | 2,608            | 96.88%        | 17,649        | -2             |
+| 6   | 10  | 2,693     | 2,609            | 96.88%        | 17,642        | 1              |
+| 6   | 11  | 2,692     | 2,608            | 96.88%        | 17,638        | -1             |
+| 6   | 12  | 2,693     | 2,608            | 96.84%        | 17,636        | 0              |
+
+From these results, we can see that the varying the values of `n` does not 
+generate major differences in the number of loci and variant sites kept. 
+Increasing `n` to 8 does to provide the largest number of polymorphic loci 
+kept, but the differences between runs are relatively small. In this example, 
+we *could* proceed with `M=6` and `n=8`; however, both `M` and `n` set to 8 
+is likely more than sufficient for an optimized analysis.
+
+##### Takeways on paramater optimization
+
+There are additional parameters beyond `M` and `n`. While there might be 
+scenarios in which further optimization is required, it is easy to get lost in
+parameter space, endlessly permuting values to obtain dimishing returns of 
+just a handful of retained loci. We should never forget that paramter 
+optimization, while important, is not the end goal of the analysis. The role 
+of parameter optimization is to obtain aproximately appropiate parameters to 
+then implement in the real analysis, from which to get our biological results.
+
+#### Generating a *de novo* catalog
+
+Now that we have optmized our parameters, we can proceed with generating a 
+*de novo* catalog containing loci and genotypes from all of our individuals.
+
+We can apply generally the same commands used during parameter optimization, 
+with some key differences. First, we will use our full popmap containing our 
+40 manakins. Also, we will **not** provide any missing data filters at this 
+stage. The reason for this is that we want to create a static "master" 
+catalog containing all the data. After inspecting this catalog, we can then 
+run `populations` to apply the desired filters and exports. In fact, we could 
+re-run `populations` multiple times over the same catalog, each time providing 
+different filtering parameters fitting a particular downstream analysis. 
+There is no need to rerun the whole *de novo* pipeline each time we need to 
+new filters or generate a new export of the data.
+
+Like before, we generate a new output directory for this *de novo* run. We 
+will name this directory according to the paramters used to generate the 
+catalog, in this case `M=6`.
+
+```sh
+$ mkdir denovo_M6
+```
+
+Our `denovo_map.pl` command then looks like:
 
 ```sh
 $ denovo_map.pl \
       --samples ./arc-radseq-data.congen24/processed-samples/ \
       --popmap ./arc-radseq-data.congen24/info/popmap.tsv \
-      --out-path denovo_M4/ \
-      -M 4 \
-      -n 4 \
+      --out-path denovo_M6/ \ 
+      -M 6 \
+      -n 6 \
       --paired \
       --rm-pcr-duplicates
 ```
+
+#### Assessing the results of the *de novo* pipeline
+
+Like we mentioned previously, the *de novo* pipeline runs several 
+programs to generate loci within and between individuals. The generated 
+log files allow us to track the data across the several stages of the 
+pipeline, and it is good practice to check some of these summaries 
+to better understand any issues that may arise.
+
+##### Assessing per-individual assembly
+
+The first stage we can do this is after running `ustacks`. At this stage,
+`ustacks` clusters the reads of each individual into sets of loci (using the
+`M` parameter we optimize before). The software will report the number of 
+loci assembled at this stage, their depth of coverage, and the proportion 
+of the total reads that were successfully incorportated into these initial 
+set of loci. We can see these for each individual by scrolling through the 
+`denovo_map.log` file, but this can be difficult when we have a large 
+number of samples. Instead, we can extract a summary using the very useful 
+`stacks-dist-extract` utility.
+
+```sh
+# Removing comment lines for readability...
+$ stacks-dist-extract denovo_M6/denovo_map.log cov_per_sample | grep -v '^#'
+  sample     loci assembled  depth of cov  max cov  number reads incorporated  % reads incorporated
+  SS_02_071  3074            20.85         87       62947                      92.9
+  SS_02_081  3019            17.77         67       52551                      91.8
+  SS_02_082  3057            19.38         86       58052                      92.2
+  SS_02_085  3092            24.28         109      73630                      92.6
+  SS_02_090  3151            24.62         115      76104                      92.4
+  SO_03_468  3113            24.40         96       74596                      92.9
+  SO_03_469  3119            31.18         126      95644                      93.9
+  SO_03_471  3108            25.59         99       77986                      92.7
+  SO_03_477  3164            28.43         118      88303                      93.1
+  SO_03_482  3165            23.92         92       74233                      92.8
+  FC_04_510  3134            27.09         129      83572                      94.1
+  FC_04_511  3174            25.62         95       79946                      93.6
+  FC_04_514  3133            27.18         118      83664                      93.3
+  ...
+```
+
+At this stage, we can see that the average depth of coverage of our samples 
+is larger than 20x. This is great! Also, we see that >90% of reads are being 
+incorporated for each sample, which is also a good result. Observing samples 
+with a low proportion of reads incorporated might reflect problems with the 
+data that the user should explore further (e.g., high repeat content, 
+contamination, etc.)
+
+##### Assessing the final catalog
+
+Once the data of all individuals has been combined, the final catalog is generated 
+by the `gstacks` program. It is an important place to assess the data, since 
+it incorporates the final coverage after the consensus locus has been assembled 
+after the removal of PCR duplicates. At this stage, we can also take a look at 
+the final genotypes that we will pass to the final stages of the analysis.
+
+We can start by taking a quick look at the `gstacks.log` file. Here, we are 
+taking a quick look in the command line, by extracting a few lines around the 
+line beggining with "`Genotyped`" using the program `grep`.
+
+```sh
+$ cat denovo_M6/gstacks.log | grep -A 3 -B 3 '^Genotyped' 
+  Removed 24891 unpaired (forward) reads (0.9%); kept 2858492 read pairs in 4242 loci.
+  Removed 1097150 read pairs whose insert length had already been seen in the same sample as putative PCR duplicates (38.4%); kept 1761342 read pairs.
+  
+  Genotyped 4242 loci:
+    effective per-sample coverage: mean=14.9x, stdev=3.0x, min=9.9x, max=22.2x
+    mean number of sites per locus: 610.7
+    a consistent phasing was found for 33178 of out 34045 (97.5%) diploid loci needing phasing
+```
+
+From these few lines alone, we can can obtain some very useful information 
+about our catalog. We can see that we assembled and genotyped 4,242 loci across 
+all individuals. Note here that this number might not represent the real data 
+in the genome, as it includes both the "real" loci that are present in the 
+population, in addition to junk loci coming from repeats and error in each 
+sample. This is expected, since we haven't applied any filters to this data.
+
+We can also obtain information about our final depth of coverage. We see a mean 
+coverage of 14.9x. This is good, but lower than the >20x than we saw in `ustacks`.
+Why is that? This is because `gstacks` is removing PCR duplicate reads. Some of 
+those initial reads making the 20x coverage were duplicates (in fact, 38.4% of 
+them, as we see in the log) and were removed, leaving us with a remaining 
+non-redundant depth of coverage of ~15x. PCR duplicates are a complex subject, 
+but generally, we care about the non-redundant coverage than the proportion 
+of duplicates themselves. We can obtain good results if we have good (>10x) 
+non-redundant coverage even if the proportion of duplicates is relatively high.
+For more information on PCR duplicates see 
+[Rochette et al. 2023](https://doi.org/10.1111/1755-0998.13800).
+
+The `gstacks.log` file provides a summary of the data across all the indivuals; 
+however, we can obtain more detailed info using the handy `stacks-dist-extract` 
+utility script, this time on the `gstacks.log.distribs` file. This distributions 
+file contains additional breakdowns of the data per each sample.
+
+For example, we can look at the per-individual coverage and PCR duplicate rate 
+using the following command:
+
+```sh
+# Removing headers and filtering some columns for readibility...
+$ stacks-dist-extract denovo_M6/gstacks.log.distribs effective_coverages_per_sample | \
+    grep -v '^#' | cut -f 1,2,5,7
+  sample     n_loci  mean_cov_ns  pcr_dupl_rate
+  CG_10_067  3080    15.181       0.382
+  CG_10_069  3029    16.924       0.384
+  CG_10_070  3017    13.495       0.378
+  CG_10_093  3101    14.946       0.383
+  CG_10_094  2994    12.997       0.379
+  FC_04_510  3027    16.714       0.391
+  FC_04_511  3058    15.989       0.387
+  FC_04_514  3025    16.909       0.385
+  FC_04_550  3077    15.518       0.388
+  ...
+```
+
+Here, for each sample, we see the number of loci processed (`n_loci`), the adjusted 
+average coverage per-locus (`mean_cov_ns`), and the proportion of PCR duplicate 
+reads (`pcr_dupl_rate`). From these results, we can indentify outlier samples, 
+e.g., those abnormally low coverage or high PCR duplicate rate that we might want 
+to remove from the analysis at this stage.
+
+The `gstacks.log.distribs` does contain additional useful information, e.g., 
+about phasing. We will revisit this file later in this protocol.
+<!----add section here---->
+
+Similarly, we will look into filtering the catalog, generating exports, an 
+exploring the log files of `populations` in a later section.
+<!----add section here---->
 
 ### Create a reference-based catalog
 
@@ -626,7 +895,7 @@ $ gstacks \
       -I ./arc-radseq-data.congen24/alignments/ \
       -M ./arc-radseq-data.congen24/info/popmap.tsv \
       -O ./ref_catalog/ \
-      --rm-pcr-duplicates
+      --rm-pcr-duplicates 
 ```
 
 ### Filter the catalog using `populations`
