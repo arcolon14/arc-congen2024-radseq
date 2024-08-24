@@ -470,7 +470,9 @@ the most representative. We can look at the results from a full run in the log f
 located in `arc-radseq-data.congen24/stacks-logs/process_radtags/`.
 
 We can inspect the logs from `process_radtags` using the *Stacks* 
-`stacks-dist-extract` program.
+`stacks-dist-extract` utility, used to extract specific subsets of information from 
+log and distribution files (see official 
+[documentation](https://catchenlab.life.illinois.edu/stacks/comp/stacks_dist_extract.php)).
 
 ```sh
 $ stacks-dist-extract process_radtags.MAVI2.log total_raw_read_counts
@@ -595,7 +597,8 @@ we only want to keep loci/SNPs present in 80% of samples per-population.
 As our input data, we will specify the processed the FASTQ files in 
 `arc-radseq-data.congen24/processed-samples/`. Note that these are the processed 
 samples provided in the shared data, not the ones we just generated using 
-`processed_radtags`. 
+`processed_radtags`. For more information, see the `denovo_map.pl` 
+[documentation](https://catchenlab.life.illinois.edu/stacks/comp/denovo_map.php).
 
 Here is an example command:
 
