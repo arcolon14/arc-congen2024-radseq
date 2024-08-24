@@ -15,7 +15,7 @@ The RADseq data used for this exercise comes from the following publication:
 
 The data is used here with the permission of the authors. Thanks to Kira M. Long!
 
-The analysis described follow the general guidelines described in the *Stacks* 2 
+This analysis follows the general guidelines described in the *Stacks* 2 
 protocol manuscript:
 
 > Rivera-Colón, AG, Catchen, JM (2022). **Population Genomics Analysis with RAD, 
@@ -48,7 +48,7 @@ A copy of this document and the associated data can be found in:
 
 ## Preparing the environment
 
-**NOTE:** the directory hierarchy in the commands below referes to the 
+**NOTE:** the directory hierarchy in the commands below refer to the 
 ConGen2024 server.
 
 Make a directory for the Stacks assignment.
@@ -141,7 +141,7 @@ different stages of the analysis.
 
 The `raw-reads` directory contains the raw sequencing files (in `FASTQ` format) from 
 this library. As described in [Long et al. 2024](https://doi.org/10.1093/evolut/qpae076), 
-total of 130 manakins (genus *Manacus*) samples were processed using a single-digest 
+a total of 130 manakin (genus *Manacus*) samples were processed using a single-digest 
 RADseq library ([Baird et al. 2008](https://doi.org/10.1371/journal.pone.0003376); 
 [Etter et al. 2011](https://doi.org/10.1371/journal.pone.0018561)) using the *SbfI* 
 restriction enzyme and paired-end sequenced on an Illumina NovaSeq6000, generating 
@@ -153,7 +153,7 @@ $ ls raw-reads/
 ```
 
 **Note:** Due to limited time, the files here only contain a fraction (~1 million 
-reads) of the files in the real library.
+reads) of the total reads in the real library.
 
 ### `processed-samples`
 
@@ -195,7 +195,7 @@ $ ls alignments/
   SS_02_090.bam
 ```
 
-The `alignments` directory contains the aligned reads (in `bam` format) from 40 manakins
+The `alignments` directory contains the aligned reads (in `bam` format) from 40 manakin
 individuals. The data for these 40 samples was run previously through `process_radtags` 
 and aligned to the golden-collared manakin (*Manacus vitellinus*) RefSeq assembly (NCBI 
 accession [GCF_001715985.3](https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_001715985.3/)) 
@@ -270,7 +270,7 @@ $ head info/barcodes.tsv
   GGCCTCG     SO_03_482
 ```
 
-The file `barcodes.tsv` is a tab-delimted file containing the individual barcode sequences 
+The file `barcodes.tsv` is a tab-delimited file containing the individual barcode sequences 
 used to demultiplex each sample from the raw reads in `process_radtags`. Since this library 
 was sequenced using the standard single-digest RADseq protocol 
 ([Baird et al. 2008](https://doi.org/10.1371/journal.pone.0003376); 
@@ -332,7 +332,7 @@ parameter optimization of the *de novo* assembly of loci.
 ### `stacks-logs`
 
 The `stacks-logs` directory contains several subdirectories, each containing the log and 
-distribution files for several , pre-run steps of the *Stacks* pipeline.
+distribution files for several, pre-run steps of the *Stacks* pipeline.
 
 ```sh
 $ ls stacks-logs/*
@@ -489,7 +489,7 @@ of the reads were due to not having a proper barcode sequence (4.5%); however,
 losses due to low quality and missing cutsites were minimal (0.1% and 0.5%, 
 respectively).
 
-We can also look at a per-sample breakdown of the reads. Once again, we can acess this 
+We can also look at a per-sample breakdown of the reads. Once again, we can access this 
 information using the `stacks-dist-extract` command.
 
 ```sh
@@ -626,7 +626,7 @@ $ gstacks \
       -I ./arc-radseq-data.congen24/alignments/ \
       -M ./arc-radseq-data.congen24/info/popmap.tsv \
       -O ./ref_catalog/ \
-      --rm-pcr-duplicate
+      --rm-pcr-duplicates
 ```
 
 ### Filter the catalog using `populations`
