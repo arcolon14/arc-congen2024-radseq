@@ -390,7 +390,7 @@ The records on a `FASTQ` file are broken down in four lines (or fields):
 2. The sequence line, containing the nucleotide sequence.
 3. The third field starts with a `+`. It is often empty, but it can also repeat the 
    information in the header line.
-4. The quality (or `PHRED`) scores.
+4. The quality (or `PHRED`) scores (as indicated by `F`, `:`, `,`, etc.)
 
 This library was constructed using a single-digest RADseq protocol 
 ([Baird et al. 2008](https://doi.org/10.1371/journal.pone.0003376); 
@@ -421,15 +421,16 @@ $ zcat arc-radseq-data.congen24/raw-reads/MAVIRAD2_NoIndex_L002_R2_001.fastq.gz 
   FFFFFFFFFFFFFF:FFFFFFFFFFFFFFFFFF,FFFFFF:FFFFFFFFFFFF:F:FF:FFFF:...
 ```
 
-Following the library configuration, we do not expect to see a barcode nor 
-a restriction enzyme cutsite.
+Following the library configuration (in this case a paired-end, 
+single-digest RADseq), we do not expect to see a barcode nor a restriction 
+enzyme cutsite.
 
 ### Processing raw data
 
 After inspecting the raw data, we can start processing it using the *Stacks*
 `process_radtags` program. We can demultiplex the combined reads into the 
 data for the individual samples, and we can filter the reads to remove 
-those of low quality.
+those of low quality (as defined by the `PHRED` score).
 
 First, we will create a new directory to store the data for the processed 
 samples.
@@ -443,7 +444,7 @@ directory. The barcodes describing the individual assignment of each sample are
 in `arc-radseq-data.congen24/info/barcodes.tsv`. We want to remove any reads 
 with uncalled bases (`N`s), we want to rescue barcodes and cutsites, and remove 
 reads with low quality. Also, we want to specify that this library was generated 
-using a single restriction enzyme, *SbfI*. Other paramters can be left default, 
+using a single restriction enzyme, *SbfI*. Other parameters can be left default, 
 for example the library uses `inline-null` barcodes.
 
 For more information on the program, please see the `process_radtags` 
@@ -486,14 +487,15 @@ $ stacks-dist-extract process_radtags.MAVI2.log total_raw_read_counts
 
 From this, we can observe that 94.5% of reads in this library were retained, 93.6% 
 of which were properly paired (i.e., both forward and paired reads were kept). Most 
-of the reads were due to not having a proper barcode sequence (4.5%); however, 
-losses due to low quality and missing cutsites were minimal (0.1% and 0.5%, 
-respectively).
+of the reads removed were due to not having a proper barcode sequence (4.5%); 
+however, losses due to low quality and missing cutsites were minimal (0.1% and 
+0.5%, respectively).
 
 We can also look at a per-sample breakdown of the reads. Once again, we can access this 
 information using the `stacks-dist-extract` command.
 
 ```sh
+# Removing some of the columns for readability
 $ stacks-dist-extract process_radtags.MAVI2.log per_barcode_raw_read_counts | \
 cut -f2,3,7,8,9,10 
   Filename     Total      Pct Retained   Pct Properly Paired   Pct Total Reads
@@ -884,7 +886,7 @@ about phasing. We will revisit this file
 
 Similarly, we will look into filtering the catalog, generating exports, an 
 exploring the log files of `populations` in a later 
-[section](#filter-the-catalog-using-populations).
+[section](#filtering-acatalog-using-populations).
 
 ### Generating a reference-based catalog
 
@@ -947,7 +949,7 @@ $ gstacks \
 
 #### Evaluating a reference-based catalog
 
-### Filter the catalog using `populations`
+### Filtering a catalog using `populations`
 
 #### General filters
 
@@ -984,7 +986,15 @@ $ populations \
       --vcf
 ```
 
-<!---Delete after this--->
+## Acknowledgements
+
+Thanks to Kira M. Long for permissions to use the manakin 
+RADseq data.
+
+Thanks to Alex Bangs for reviewing this document.
+
+Thanks to Julian M. Catchen for the development of *Stacks* 
+and general discussion about the software.
 
 ## Authors
 
