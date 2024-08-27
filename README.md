@@ -1242,6 +1242,27 @@ data in each sample and it is a good approach to remove low-quality
 samples, also known as the "bad apples" as described by
 [Cerca et al. 2021](https://doi.org/10.1111/2041-210X.13562).
 
+Other useful breakdowns as well, such as the distribution in the number 
+of SNPs per locus:
+
+```sh
+$ stacks-dist-extract --pretty populations.log.distribs snps_per_loc_postfilters | \
+    grep -v '^#' | head -n12
+  n_snps  n_loci
+  0       38009
+  1       10607
+  2       9517
+  3       7492
+  4       5808
+  5       4429
+  6       3238
+  7       2422
+  8       1766
+  9       1278
+  10      896
+  ...
+```
+
 #### Takeaways
 
 * `populations` was designed to be modular
