@@ -61,7 +61,7 @@ $ cd stacks-radseq/
 Copy the raw data from the instructors directory
 
 ```sh
-$ cp ../instructor_materials/Angel_Rivera-Colon/2024/arc-radseq-data.congen24.tar.gz .
+$ cp /data/instructor_materials/Angel_Rivera-Colon/2024/arc-radseq-data.congen24.tar.gz .
 ```
 
 Uncompress this directory
@@ -73,7 +73,7 @@ $ tar xvf arc-radseq-data.congen24.tar.gz
 Check the contents of the directory
 
 ```sh
-$ ls *
+$ ls arc-radseq-data.congen24/*
   alignments:
   CG_10_067.bam   PR_09_096.bam   RO_05_206.bam   SO_03_468.bam
   CG_10_069.bam   PR_09_102.bam   RO_05_221.bam   SO_03_469.bam
@@ -475,14 +475,14 @@ log and distribution files (see official
 [documentation](https://catchenlab.life.illinois.edu/stacks/comp/stacks_dist_extract.php)).
 
 ```sh
-$ stacks-dist-extract process_radtags.MAVI2.log total_raw_read_counts
-  Total Sequences        822561114
-  Barcode Not Found      37391352   4.5%
-  Low Quality            866995     0.1%
-  Poly-G Runs            2982449    0.4%
-  RAD Cutsite Not Found  4241295    0.5%
-  Retained Reads         777079023  94.5%
-  Properly Paired        384920302  93.6%
+  $ stacks-dist-extract process_radtags.MAVI2.log total_raw_read_counts
+    Total Sequences        822561114
+    Barcode Not Found      37391352   4.5%
+    Low Quality            866995     0.1%
+    Poly-G Runs            2982449    0.4%
+    RAD Cutsite Not Found  4241295    0.5%
+    Retained Reads         777079023  94.5%
+    Properly Paired        384920302  93.6%
 ```
 
 From this, we can observe that 94.5% of reads in this library were retained, 93.6% 
@@ -583,11 +583,18 @@ often recommended to provide a general speedup of the process. For this purpose,
 have provided a secondary popmap (`info/popmap_catalog.tsv`) just containing 15 
 manakin samples, all assigned to a single group labelled `opt`.
 
-We will also generate an output directory to store the outputs of this run. We 
-will name this directory according to the value of `M`, 5 in this example.
+We will also generate an output directory to store the outputs for all opmtimization
+runs. 
 
 ```sh
-$ mkdir param_opt_M5
+$ mkdir denovo_param_opt
+```
+
+Then, we will name this directory for the specific run according to the value 
+of `M`, 5 in this example.
+
+```sh
+$ mkdir denovo_param_opt/param_opt_M5
 ```
 
 We then want to run `denovo_map.pl`, specfying the value of `M`, the smaller 
@@ -607,9 +614,10 @@ Here is an example command:
 $ denovo_map.pl \
   --samples ./arc-radseq-data.congen24/processed-samples/ \
   --popmap ./arc-radseq-data.congen24/info/popmap_catalog.tsv \
-  --out-path ./param_opt_M5/ \
+  --out-path ./denovo_param_opt/param_opt_M5 \
   -M 5 \
   -n 5 \
+  -r 0.8 \
   --paired \
   --rm-pcr-duplicates -r 0.8
 ```
@@ -679,16 +687,17 @@ Like before, we will make a new output directory and run `denovo_map.pl` with th
 corresponding `M` and `n` values.
 
 ```sh
-$ mkdir ./param_opt_M6n8/
+$ mkdir ./denovo_param_opt/param_opt_M6n8/
 
 $ denovo_map.pl \
   --samples ./arc-radseq-data.congen24/processed-samples/ \
   --popmap ./arc-radseq-data.congen24/info/popmap_catalog.tsv \
-  --out-path ./param_opt_M6n8/ \
+  --out-path ./denovo_param_opt/param_opt_M6n8/ \
   -M 6 \
   -n 8 \
+  -r 0.8 \
   --paired \
-  --rm-pcr-duplicates -r 0.8
+  --rm-pcr-duplicates
 ```
 
 Once each runs complete, we can extract the values of kept loci and variant 
@@ -708,10 +717,10 @@ as shown previously.
 
 From these results, we can see that the varying the values of `n` does not 
 generate major differences in the number of loci and variant sites kept. 
-Increasing `n` to 8 does to provide the largest number of polymorphic loci 
-kept, but the differences between runs are relatively small. In this example, 
-we *could* proceed with `M=6` and `n=8`; however, both `M` and `n` set to 8 
-is likely more than sufficient for an optimized analysis.
+Increasing `n` to 8 does provide the largest number of polymorphic loci kept, 
+but the differences between runs are relatively small. In this example, we 
+*could* proceed with `M=6` and `n=8`; however, both `M` and `n` set to 6 is 
+likely more than sufficient for an optimized analysis.
 
 ##### Takeways on paramater optimization
 
