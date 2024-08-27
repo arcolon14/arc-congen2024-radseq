@@ -1140,25 +1140,59 @@ different reference or that *de novo* approach might be better altogether.
 After generating the catalog, it can then be filtered to remove loci 
 and/or variant sites with low quality, high missing data, or absent 
 from specific populations. Here, we are filtering our reference-based 
-catalog; however, the approach is the same for *de novo* catalogs. 
+catalog, the one we just generated in
 
-Note that like parameter optimizations, filtering the data are also 
-a complex parameter space. There is no single catch-all filters for 
-all datasets. It all depends on the properties of the data and 
-downstream application.
+```sh
+  ~/stacks-radseq/ref_catalog
+```
 
-Create output directory for all runs
+However, the approach is the same for catalogs generated 
+*de novo*.
+
+Note that like parameter optimization, filtering the data is also a 
+complex parameter space. There is no single catch-all filters for all 
+datasets. It all depends on the properties of the data and downstream 
+application. Below you will see just two examples, showing two very 
+generic filtering schemes for this dataset. Your data is likely to use 
+a different combination of parameters. You will hear more about filtering 
+and processing genotypes later in the workshop as well. 
+
+#### Setting up our environment
+
+First, we want to make an output directory to store all runs of 
+`populations`. This will help to keep things organized as we set up analysis
+using different filtering parameters.
 
 ```sh
 $ mkdir filter-catalog
 $ cd filter-catalog/
 ```
 
+The `populations` program is designed to be modular. The idea is that the 
+catalog is generated once for a set of samples. After that, we can then 
+filter this catalog several times, applying the specific parameters for the 
+corresponding analysis downstream and using parameters that correspond to the 
+properties observed in the data. This is why we didn't apply any missing data 
+filters when first generating the catalogs in the previous steps.
+
 #### General filters
+
+A good practice after generating the catalog, it is a good idea to apply a set 
+of broad or baseline level filters. We might not use these for exporting data 
+downstream, but they are helpful for observing the general quality of the data.
+
+Let's apply some baseline levels filters. First, let's create a new output 
+directory. I like naming output directories based on the parameters I am using 
+in the specific run. The specific parameters will make sense in the next step.
 
 ```sh
 $ mkdir populations_R50_p1_mac3
 ```
+
+Let's now run `populations` on our catalog. We want to specify the paths to our 
+input catalog, our output directory, and to our population map describing our 
+40 manakins. Next, we want to filter data to include only loci present in 50% of
+samples overall, in a single population, and with a minimum allele count of 3.
 
 ```sh
 $ populations \
