@@ -1137,6 +1137,23 @@ different reference or that *de novo* approach might be better altogether.
 
 ### Filtering a catalog using `populations`
 
+After generating the catalog, it can then be filtered to remove loci 
+and/or variant sites with low quality, high missing data, or absent 
+from specific populations. Here, we are filtering our reference-based 
+catalog; however, the approach is the same for *de novo* catalogs. 
+
+Note that like parameter optimizations, filtering the data are also 
+a complex parameter space. There is no single catch-all filters for 
+all datasets. It all depends on the properties of the data and 
+downstream application.
+
+Create output directory for all runs
+
+```sh
+$ mkdir filter-catalog
+$ cd filter-catalog/
+```
+
 #### General filters
 
 ```sh
@@ -1145,13 +1162,26 @@ $ mkdir populations_R50_p1_mac3
 
 ```sh
 $ populations \
-      --in-path ./ref_catalog/ \
+      --in-path ../ref_catalog/ \
       --out-path ./populations_R50_p1_mac3/ \
-      --popmap ./arc-radseq-data.congen24/info/popmap.tsv \
+      --popmap ../arc-radseq-data.congen24/info/popmap.tsv \
       --min-populations 1 \
       --min-samples-overall 0.5 \
       --min-mac 3
 ```
+
+Moving to full log runs in:
+`~/stacks-radseq/arc-radseq-data.congen24/stacks-logs/populations_base`
+
+```sh
+$ cat populations.log | grep -B 1 'Kept'
+  Removed 36681 loci that did not pass sample/population constraints 
+    from 132017 loci.
+  Kept 95336 loci, composed of 74654314 sites; 25156688 of those sites 
+    were filtered, 689153 variant sites remained.
+```
+
+We find 95,336 loci, and 689,153 variant sites (SNPs).
 
 #### Strict filters
 
@@ -1161,9 +1191,9 @@ $ mkdir populations_r80_p8_maf05_dp5
 
 ```sh
 $ populations \
-      --in-path ./ref_catalog/ \
+      --in-path ../ref_catalog/ \
       --out-path ./populations_r80_p8_maf05_dp5/ \
-      --popmap ./arc-radseq-data.congen24/info/popmap.tsv \
+      --popmap ../arc-radseq-data.congen24/info/popmap.tsv \
       --min-populations 8 \
       --min-samples-per-pop 0.8 \
       --min-maf 0.05 \
@@ -1171,6 +1201,58 @@ $ populations \
       --ordered-export \
       --vcf
 ```
+
+Moving to full log runs in:
+`~/stacks-radseq/arc-radseq-data.congen24/stacks-logs/populations_strict`
+
+```sh
+$ cat populations.log | grep -B 1 'Kept'
+  Removed 44254 loci that did not pass sample/population constraints 
+    from 132017 loci.
+  Kept 87763 loci, composed of 69491349 sites; 36665715 of those sites 
+    were filtered, 199049 variant sites remained.
+```
+
+With more strict filters, 87,783 loci and 199,049 variant sites (SNPs).
+
+This highlights some more detailed per-sample distributions, in this case 
+the proportion of variant sites per sample. This distribution shows missing 
+data at a SNP level. We can obtain this from the `populations.log.distribs` 
+file using the `stacks-dist-extract` tool:
+
+```sh
+$ stacks-dist-extract --pretty populations.log.distribs variant_sites_per_sample | \
+    grep -v '^#'
+  sample     n_sites  present_sites  missing_sites  frequency_missing
+  SS_02_071  199049   194259         4790           0.0241
+  SS_02_081  199049   187171         11878          0.0597
+  SS_02_082  199049   192134         6915           0.0347
+  SS_02_085  199049   196782         2267           0.0114
+  SS_02_090  199049   196763         2286           0.0115
+  SO_03_468  199049   196045         3004           0.0151
+  SO_03_469  199049   197677         1372           0.0069
+  SO_03_471  199049   196645         2404           0.0121
+  SO_03_477  199049   197425         1624           0.0082
+  SO_03_482  199049   195030         4019           0.0202
+  ...
+```
+
+The `frequency_missing` column, highlights the proportion of missing 
+data in each sample and it is a good approach to remove low-quality 
+samples, also known as the "bad apples" as described by
+[Cerca et al. 2021](https://doi.org/10.1111/2041-210X.13562).
+
+#### Takeaways
+
+* `populations` was designed to be modular
+  * Catalog is generated once, and filters are independently applied 
+    later
+* Each downstream application has different requirements
+  * Independently run `populations` with the required filters for 
+    each application
+* There’s no exact or catch-all filtering parameters to use – it always 
+  depends on the data and downstream application
+
 
 ## Acknowledgements
 
